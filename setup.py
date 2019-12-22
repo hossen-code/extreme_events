@@ -7,6 +7,8 @@ NAME = 'extreme_events'
 
 INSTALL_REQUIRES = [
     # Core dependencies
+    "matplotlib ==3.1.2",
+    "scipy ==1.4.1",
     "scikit-learn ==0.20.3",
     "keras ==2.2.4",
     "tensorflow ==2.0.0",

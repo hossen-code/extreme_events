@@ -4,11 +4,13 @@ Program to plot Rössler attractor
 from matplotlib import pyplot as plt
 import numpy as np
 from scipy.integrate import odeint
+from mpl_toolkits.mplot3d import Axes3D # this is for necessary for plot
 
-#parameters
+# parameters
 a = 0.38
 b = 0.35
 c = 4.5
+
 
 def rossler(X, t):
     x, y, z = X    
@@ -16,6 +18,7 @@ def rossler(X, t):
     dy = x + a*y
     dz = b*x - c*z + x*z
     return [dx, dy, dz]
+
 
 # numerical integration
 X0 = [2, 2, 2]
@@ -25,12 +28,12 @@ x, y, z = result.T
 
 
 # figure
-fig = plt.figure(figsize=(13,9))
+fig = plt.figure(figsize=(13, 9))
 ax = fig.gca(projection='3d')
 ax.set_ylim(-6, 6)
 ax.set_xlim(-6, 6)
 ax.set_zlim(0, 12)
 ax.view_init(20, 160)
 ax.set_axis_off()
-ax.plot(x,y,z,'magenta')
+ax.plot(x, y, z, 'magenta')
 plt.show()
