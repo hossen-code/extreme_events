@@ -11,7 +11,7 @@ INSTALL_REQUIRES = [
     "scipy ==1.4.1",
     "scikit-learn ==0.20.3",
     "keras ==2.2.4",
-    "tensorflow ==2.0.0",
+    "tensorflow ==2.1.0",
     "pandas ==0.23.4",
     "numpy ==1.16.2",
 ]
