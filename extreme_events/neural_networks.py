@@ -1,7 +1,8 @@
-from keras.layers import embeddings
-from keras.backend import clear_session
+
 import tensorflow as tf
 import numpy as np
+
+from extreme_events.data_source.data_providers import train_test_splitter
 
 
 def set_seeds_and_clear_session():
@@ -10,7 +11,7 @@ def set_seeds_and_clear_session():
     np.random.seed(51)
 
 
-def build_and_fit_model(dataset):
+def make_lstm_model():
     model = tf.keras.models.Sequential([tf.keras.layers.Lambda(
         lambda x: tf.expand_dims(x, axis=-1), input_shape=[None]),
         tf.keras.layers.Bidirectional(
@@ -19,10 +20,22 @@ def build_and_fit_model(dataset):
         tf.keras.layers.Dense(1),
         tf.keras.layers.Lambda(lambda x: x * 100.0) # not sure why multiplied by 100
     ])
-    lr_schedule = tf.keras.callbacks.LearningRateScheduler(
-        lambda epoch: 1e-8 * 10**(epoch / 20))
     optimizer = tf.keras.optimizers.SGD(lr=1e-8, momentum=0.9)
     model.compile(loss=tf.keras.losses.Huber(),
                   optimizer=optimizer,
                   metrics=["mae"])
-    history = model.fit(dataset, epochs=100, callbacks=[lr_schedule])
+    return model
+
+
+def run_model(train_data):
+    lstm = make_lstm_model()
+    lr_schedule = tf.keras.callbacks.LearningRateScheduler(
+        lambda epoch: 1e-8 * 10**(epoch / 20))
+    history = lstm.fit(train_data, epochs=100, callbacks=[lr_schedule])
+
+    return history
+
+
+def split_data_stream(data_tuple, train_percentage):
+    for column in data_tuple.feature:
+        train, test = train_test_splitter(column, train_percentage)
