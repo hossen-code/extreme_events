@@ -2,7 +2,7 @@
 import tensorflow as tf
 import numpy as np
 
-from extreme_events.data_source.data_providers import train_test_splitter
+from extreme_events.data_source.data_providers import train_test_splitter, rossler_dataset, X_0, TIME
 
 
 def set_seeds_and_clear_session():
@@ -36,6 +36,15 @@ def run_model(train_data):
     return history
 
 
-def split_data_stream(data_tuple, train_percentage):
-    for column in data_tuple.feature:
-        train, test = train_test_splitter(column, train_percentage)
+# def split_data_stream(data_tuple, train_percentage):
+#     for column in data_tuple.feature:
+#         train, test = train_test_splitter(column, train_percentage)
+#     return train, test
+
+
+if __name__ == "__main__":
+    set_seeds_and_clear_session()
+    data = rossler_dataset(x_0=X_0, time_range=TIME)
+    train, test = train_test_splitter(data, train_ratio=0.8)
+    run_model(train)
+    # model = make_lstm_model()

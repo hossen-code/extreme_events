@@ -30,9 +30,6 @@ def train_test_splitter(data_column: np.ndarray,
     return train_set, test_set
 
 
-
-
-
 if __name__ == "__main__":
     data = rossler_dataset(x_0=X_0, time_range=TIME)
     pass
