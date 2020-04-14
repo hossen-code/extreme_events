@@ -7,7 +7,7 @@ from extreme_events.data_source.data_providers import train_test_splitter, rossl
 
 def set_seeds_and_clear_session():
     tf.keras.backend.clear_session()
-    tf.random.set_seed(51)
+    # tf.random.set_seed(51)
     np.random.seed(51)
 
 
@@ -18,7 +18,7 @@ def make_lstm_model():
             tf.keras.layers.LSTM(32, return_sequences=True)),
         tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32)),
         tf.keras.layers.Dense(1),
-        tf.keras.layers.Lambda(lambda x: x * 100.0) # not sure why multiplied by 100
+        tf.keras.layers.Lambda(lambda x: x * 100.0) # not sure if the normalization here is good.
     ])
     optimizer = tf.keras.optimizers.SGD(lr=1e-8, momentum=0.9)
     model.compile(loss=tf.keras.losses.Huber(),
@@ -31,7 +31,7 @@ def run_model(train_data):
     lstm = make_lstm_model()
     lr_schedule = tf.keras.callbacks.LearningRateScheduler(
         lambda epoch: 1e-8 * 10**(epoch / 20))
-    history = lstm.fit(train_data, epochs=100, callbacks=[lr_schedule])
+    history = lstm.fit(train_data, epochs=5, callbacks=[lr_schedule])
 
     return history
 
@@ -47,4 +47,3 @@ if __name__ == "__main__":
     data = rossler_dataset(x_0=X_0, time_range=TIME)
     train, test = train_test_splitter(data, train_ratio=0.8)
     run_model(train)
-    # model = make_lstm_model()

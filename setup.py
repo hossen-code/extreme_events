@@ -10,7 +10,7 @@ INSTALL_REQUIRES = [
     "matplotlib ==3.1.2",
     "scipy ==1.4.1",
     "scikit-learn ==0.20.3",
-    "tensorflow ==2.1.0",
+    "tensorflow ==1.15.0",
     "pandas ==1.0.1",
     "numpy ==1.16.2",
 ]
