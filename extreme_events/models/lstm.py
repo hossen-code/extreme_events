@@ -16,6 +16,8 @@ def make_lstm_model():
         lambda x: tf.expand_dims(x, axis=-1), input_shape=[None]),
         tf.keras.layers.Bidirectional(
             tf.keras.layers.LSTM(32, return_sequences=True)),
+        tf.keras.layers.Bidirectional(
+            tf.keras.layers.LSTM(32, return_sequences=True)),
         tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32)),
         tf.keras.layers.Dense(1),
         tf.keras.layers.Lambda(lambda x: x * 100.0) # not sure if the normalization here is good.
@@ -31,7 +33,7 @@ def run_model(train_data):
     lstm = make_lstm_model()
     lr_schedule = tf.keras.callbacks.LearningRateScheduler(
         lambda epoch: 1e-8 * 10**(epoch / 20))
-    history = lstm.fit(train_data, epochs=5, callbacks=[lr_schedule])
+    history = lstm.fit(train_data, epochs=10, callbacks=[lr_schedule])
 
     return history
 

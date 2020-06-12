@@ -7,7 +7,7 @@ from scipy.integrate import odeint
 from extreme_events.data_source.rossler import rossler
 
 X_0 = [2, 2, 2]
-TIME = np.arange(0, 300, 0.01)
+TIME = np.arange(0, 300, 0.1)
 
 data = namedtuple("data", ["feature", "target"])
 
