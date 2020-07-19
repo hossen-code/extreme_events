@@ -33,3 +33,12 @@ def train_test_splitter(data_column: np.ndarray,
     test_set = data_column[train_size:]
 
     return train_set, test_set
+
+
+def threshold_binarizer(array: np.ndarray,
+                        threshold: float):
+    """
+    Turns an array of floats into a binary array (0. and 1.) where
+    the value smaller than threshold returns 0, otherwise 1.
+    """
+    return (array > threshold) * np.ones(np.shape(array))

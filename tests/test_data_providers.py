@@ -1,6 +1,7 @@
 import numpy as np
 
-from extreme_events.data_source.data_providers import rossler_dataset_maker
+from extreme_events.data_source.data_providers import rossler_dataset_maker, threshold_binarizer
+
 
 def test_rossler_dataset_creator():
     x_0 = [2, 2, 2]
@@ -13,3 +14,9 @@ def test_rossler_dataset_creator():
     np.testing.assert_allclose(first_five_y, data.feature[1][0:5])
     np.testing.assert_allclose(first_five_z, data.target[0][0:5])
 
+
+def test_threshold_binarizier():
+    x_0 = np.array([1.1, 2.3, 34.5, -2.0, 4.5])
+    res = np.array([0, 1, 1, 0, 1])
+    threshold = 1.8
+    np.testing.assert_allclose(threshold_binarizer(x_0, threshold), res)
