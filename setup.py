@@ -7,12 +7,13 @@ NAME = 'extreme_events'
 
 INSTALL_REQUIRES = [
     # Core dependencies
-    "matplotlib ==3.1.2",
-    "scipy ==1.4.1",
-    "scikit-learn ==0.20.3",
-    "tensorflow ==1.15.0",
-    "pandas ==1.0.1",
-    "numpy ==1.16.2",
+    "tensorflow",
+    "scikit-learn",
+    "matplotlib",
+    "scipy",
+    "pandas",
+    "numpy",
+    "pytest",
 ]
 
 # add development requires here

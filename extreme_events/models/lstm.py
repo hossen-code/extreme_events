@@ -1,29 +1,25 @@
 
-import tensorflow as tf
+from tensorflow import keras
 import numpy as np
 
-from extreme_events.data_source.data_providers import train_test_splitter, rossler_dataset, X_0, TIME
+from extreme_events.data_source.data_providers import train_test_splitter, \
+    rossler_dataset_maker
 
 
 def set_seeds_and_clear_session():
-    tf.keras.backend.clear_session()
+    keras.backend.clear_session()
     # tf.random.set_seed(51)
     np.random.seed(51)
 
 
 def make_lstm_model():
-    model = tf.keras.models.Sequential([tf.keras.layers.Lambda(
-        lambda x: tf.expand_dims(x, axis=-1), input_shape=[None]),
-        tf.keras.layers.Bidirectional(
-            tf.keras.layers.LSTM(32, return_sequences=True)),
-        tf.keras.layers.Bidirectional(
-            tf.keras.layers.LSTM(32, return_sequences=True)),
-        tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32)),
-        tf.keras.layers.Dense(1),
-        tf.keras.layers.Lambda(lambda x: x * 100.0) # not sure if the normalization here is good.
-    ])
-    optimizer = tf.keras.optimizers.SGD(lr=1e-8, momentum=0.9)
-    model.compile(loss=tf.keras.losses.Huber(),
+    model = keras.models.Sequential(
+        [keras.layers.LSTM(20, return_sequences=True, input_shape=[None, 1]),
+         keras.layers.LSTM(20, return_sequences=True),
+         keras.layers.TimeDistributed(keras.layers.Dense(10))
+         ])
+    optimizer = keras.optimizers.SGD(lr=1e-8, momentum=0.9)
+    model.compile(loss=keras.losses.Huber(),
                   optimizer=optimizer,
                   metrics=["mae"])
     return model
@@ -31,7 +27,7 @@ def make_lstm_model():
 
 def run_model(train_data):
     lstm = make_lstm_model()
-    lr_schedule = tf.keras.callbacks.LearningRateScheduler(
+    lr_schedule = keras.callbacks.LearningRateScheduler(
         lambda epoch: 1e-8 * 10**(epoch / 20))
     history = lstm.fit(train_data, epochs=10, callbacks=[lr_schedule])
 
@@ -46,6 +42,8 @@ def run_model(train_data):
 
 if __name__ == "__main__":
     set_seeds_and_clear_session()
-    data = rossler_dataset(x_0=X_0, time_range=TIME)
+    x_0 = [2, 2, 2]
+    time_range = np.arange(0, 30, 0.1)
+    data = rossler_dataset_maker(x_0=x_0, time_range=time_range)
     train, test = train_test_splitter(data, train_ratio=0.8)
     run_model(train)
