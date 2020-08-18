@@ -1,5 +1,5 @@
 # trying to run a simple rnn model first
-
+import tensorflow as tf
 from tensorflow import keras
 import numpy as np
 
@@ -25,7 +25,25 @@ if __name__ == "__main__":
         keras.layers.Dense(1)
     ])
 
+    # model = keras.models.Sequential([
+    #     keras.layers.LSTM(20, return_sequences=True, input_shape=[None, 1]),
+    #     keras.layers.LSTM(20, return_sequences=True),
+    #     keras.layers.TimeDistributed(keras.layers.Dense(10))
+    # ])
+
+
+    def last_time_step_mse(Y_true, Y_pred):
+        return keras.metrics.mean_squared_error(Y_true[:, -1], Y_pred[:, -1])
+
+    optimizer = keras.optimizers.Adam(lr=0.01)
+    model.compile(loss="mse", optimizer=optimizer, metrics=[last_time_step_mse])
+    with tf.device('/GPU:0'):
+        gpus = tf.config.experimental.list_physical_devices('GPU')
+        history = model.fit(X_new, Y_new, epochs=10)
+
     for step_ahead in range(10):
         y_pred_one = model.predict(X[:, step_ahead:])[:, np.newaxis, :]
     X = np.concatenate([X, y_pred_one], axis=1)
     Y_pred = X[:, n_steps:]
+
+    print(Y_pred)

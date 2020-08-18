@@ -8,6 +8,7 @@ NAME = 'extreme_events'
 INSTALL_REQUIRES = [
     # Core dependencies
     "tensorflow",
+    "tensorflow-gpu",
     "scikit-learn",
     "matplotlib",
     "scipy",
