@@ -2,6 +2,9 @@
 import tensorflow as tf
 from tensorflow import keras
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+
 
 def generate_time_series(batch_size, n_steps):
     # this is from the hands-on ml book
@@ -13,12 +16,24 @@ def generate_time_series(batch_size, n_steps):
     return series[..., np.newaxis].astype(np.float32)
 
 
+def plot_learning_curves(loss, val_loss):
+    plt.plot(np.arange(len(loss)) + 0.5, loss, "b.-", label="Training loss")
+    plt.plot(np.arange(len(val_loss)) + 1, val_loss, "r.-", label="Validation loss")
+    plt.gca().xaxis.set_major_locator(mpl.ticker.MaxNLocator(integer=True))
+    plt.axis([1, 20, 0, 0.05])
+    plt.legend(fontsize=14)
+    plt.xlabel("Epochs")
+    plt.ylabel("Loss")
+    plt.grid(True)
+
+
 if __name__ == "__main__":
     n_steps = 50
-    series = generate_time_series(1, n_steps + 10)
-    X_new, Y_new = series[:, :n_steps], series[:, n_steps:]
-    X = X_new
-
+    series = generate_time_series(10000, n_steps + 1)
+    X_train, y_train = series[:7000, :n_steps], series[:7000, -1]
+    X_valid, y_valid = series[7000:9000, :n_steps], series[7000:9000, -1]
+    X_test, y_test = series[9000:, :n_steps], series[9000:, -1]
+    print(X_train.shape, y_train.shape)
     model = keras.models.Sequential([
         keras.layers.SimpleRNN(20, return_sequences=True, input_shape=[None, 1]),
         keras.layers.SimpleRNN(20),
@@ -38,12 +53,17 @@ if __name__ == "__main__":
     optimizer = keras.optimizers.Adam(lr=0.01)
     model.compile(loss="mse", optimizer=optimizer, metrics=[last_time_step_mse])
     with tf.device('/GPU:0'):
-        gpus = tf.config.experimental.list_physical_devices('GPU')
-        history = model.fit(X_new, Y_new, epochs=10)
+        history = model.fit(X_train, y_train, epochs=20,
+                            validation_data=(X_valid, y_valid))
 
-    for step_ahead in range(10):
-        y_pred_one = model.predict(X[:, step_ahead:])[:, np.newaxis, :]
-    X = np.concatenate([X, y_pred_one], axis=1)
-    Y_pred = X[:, n_steps:]
+    model.evaluate(X_valid, y_valid)
+    plot_learning_curves(history.history["loss"], history.history["val_loss"])
+    plt.show()
+    plt.savefig()
 
-    print(Y_pred)
+    # for step_ahead in range(10):
+    #     y_pred_one = model.predict(X_train[:, step_ahead:])[:, np.newaxis, :]
+    # X = np.concatenate([X, y_pred_one], axis=1)
+    # Y_pred = X[:, n_steps:]
+    #
+    # print(Y_pred)
