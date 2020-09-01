@@ -53,18 +53,3 @@ class LSTM(object):
                       metrics=self.metrics)
         self.model = model
 
-
-def lstm_model():
-    def last_time_step_mse(Y_true, Y_pred):
-        return keras.metrics.mean_squared_error(Y_true[:, -1], Y_pred[:, -1])
-
-    lr_schedule = keras.callbacks.LearningRateScheduler(
-        lambda epoch: 1e-8 * 10 ** (epoch / 20))
-    model = keras.models.Sequential([
-        keras.layers.LSTM(20, return_sequences=True, input_shape=[None, 2]),
-        keras.layers.LSTM(20, return_sequences=True),
-        keras.layers.TimeDistributed(keras.layers.Dense(10))
-    ])
-    model.compile(loss="mse", optimizer="adam", metrics=[last_time_step_mse])
-    return model
-

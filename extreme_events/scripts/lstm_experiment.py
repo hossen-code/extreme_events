@@ -13,6 +13,10 @@ if __name__ == "__main__":
     x_train = data[0][:, :-1].reshape(1, 3000, 2) # both x and y (assuming 2 variates)
     y_train = data[0][:, -1:].reshape(1, 3000, 1) # assuming the last column is target
     optimizer = keras.optimizers.Adam(lr=0.005)
+
+    def last_time_step_mse(Y_true, Y_pred):
+        return keras.metrics.mean_squared_error(Y_true[:, -1], Y_pred[:, -1])
+
     loss = "mse"
     metrics = ["mse"]
     model = LSTM(loss_function=loss, optimizer=optimizer, metrics=metrics)
