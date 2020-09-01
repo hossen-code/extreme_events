@@ -3,7 +3,8 @@ import numpy as np
 
 from extreme_events.data_source.data_providers import rossler_dataset_maker
 from extreme_events.utils.model_utils import set_seeds_and_clear_session
-from extreme_events.models.lstm import LSTM, lstm_model
+from extreme_events.models.lstm import LSTM
+
 
 if __name__ == "__main__":
     set_seeds_and_clear_session()
