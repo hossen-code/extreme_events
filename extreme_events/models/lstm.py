@@ -25,7 +25,7 @@ class LSTM(object):
         # memory growth has to be added for lstm to run
         gpus = tf.config.experimental.list_physical_devices(device_type='GPU')
         tf.config.experimental.set_memory_growth(device=gpus[0], enable=True)
-        #
+
         if not self.model:
             self._make_model()
         if on_gpu:
