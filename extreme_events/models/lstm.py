@@ -22,7 +22,7 @@ class LSTM(object):
         self.hisory = None
 
     def fit(self, X, y, num_epochs=20, on_gpu=True):
-        # memory growth has to be added for lstm to run
+        # memory growth has to be set to True for lstm to run
         gpus = tf.config.experimental.list_physical_devices(device_type='GPU')
         tf.config.experimental.set_memory_growth(device=gpus[0], enable=True)
 
@@ -37,7 +37,6 @@ class LSTM(object):
         return self.history
 
     def _make_model(self):
-        # model = keras.Sequential()
         layers = []
         # adding input layer
         input_layer = keras.layers.LSTM(self.num_lstm_nodes_per_layer,
