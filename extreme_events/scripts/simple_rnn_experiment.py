@@ -8,8 +8,10 @@ from extreme_events.models.simple_rnn import SimpleRNN
 if __name__ == "__main__":
     set_seeds_and_clear_session()
     x_0 = [2, 2, 2]
-    time_range = np.arange(0, 30, 0.01)
-    data = rossler_dataset_maker(x_0=x_0, time_range=time_range)
+    start_time = 0.0
+    end_time = 30.0
+    time_step = 0.01
+    data = rossler_dataset_maker(x_0=x_0, start_time=start_time, end_time=end_time, time_step=time_step)
     x_train = data[0][:, :-1].reshape(1, 3000, 2) # both x and y
     y_train = data[0][:, -1:].reshape(1, 3000, 1) # assuming the last column is target
     optimizer = keras.optimizers.Adam(lr=0.005)
