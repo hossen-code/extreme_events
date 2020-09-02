@@ -33,7 +33,6 @@ class SimpleRNN(object):
         return self.history
 
     def _make_model(self):
-        # model = keras.models.Sequential()
         layers = []
         input_layer = keras.layers.SimpleRNN(self.num_rnn_nodes_per_layer,
                                              return_sequences=True,
