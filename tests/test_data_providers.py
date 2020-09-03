@@ -5,7 +5,6 @@ from extreme_events.data_source.data_providers import rossler_dataset_maker, thr
 
 def test_rossler_dataset_creator():
     x_0 = [2, 2, 2]
-    time_range = np.arange(0, 30, 0.1)
     data = rossler_dataset_maker(x_0=x_0, start_time=0.0, end_time=30.0, time_step=0.1)
     first_five_x = np.array([2., 1.607831, 1.23093264, 0.8672437,  0.51370104])
     first_five_y = np.array([2., 2.26131837, 2.49356973, 2.69709381, 2.8719731])
