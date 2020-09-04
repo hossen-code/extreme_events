@@ -66,3 +66,17 @@ def threshold_binarizer(array: np.ndarray, threshold: float):
     the value smaller than threshold returns 0, otherwise 1.
     """
     return (array > threshold) * np.ones(np.shape(array))
+
+
+def if_flips(array: np.array):
+    """
+    Returns if any value after the first element is different from the first element.
+    """
+    # I think there is a better way to write this part.
+    if array[0] == 0:
+        if 1.0 in array[1:]:
+            return True
+    if array[0] == 1:
+        if 0.0 in array[1:]:
+            return True
+    return False
