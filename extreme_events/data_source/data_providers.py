@@ -19,11 +19,11 @@ def rossler_dataset_maker(x_0: List[float],
     """
     return the dataset in x, y, z format of float32 numbers. z is the target.
     :param x_0: is the initial point [x0, y0, z0]
-    :param start_time:
-    :param end_time:
-    :param time_step:
-    :param target_advance_time:
-    :param target_threshold_val:
+    :param start_time: starting time fo the rossler data
+    :param end_time: ending time, duh!
+    :param time_step: the time resoloution to generate dataset
+    :param target_advance_time: how long in advance you want to consider the prediction
+    :param target_threshold_val: the threshold that above that the value is considered extreme
     :return: data to train, data.shape is (a, b, c) which a is the number of batches
     b is the time series (values through time), c is the number of variates + target
     (for now we assume, the last one is the target as our problem is single-target).
@@ -50,7 +50,7 @@ def rossler_dataset_maker(x_0: List[float],
 def train_test_splitter(data_column: np.ndarray,
                         train_ratio: float):
     """
-    TODO: this needs to change, to be vertical split (or have the option)
+    TODO: test for ndimensional, should be good for 1d
     for now we're assuming the last member is the target.
     """
     train_size = floor(len(data_column)*train_ratio)
@@ -68,10 +68,16 @@ def threshold_binarizer(array: np.ndarray, threshold: float):
     return (array > threshold) * np.ones(np.shape(array), dtype=int)
 
 
-def if_flips_in_next_n_steps(array: np.array, threshold: float, n_time_steps):
+def if_flips_in_next_n_steps(array: np.array, threshold: float, n_time_steps: int):
     """
     Returns an encoding that shows if the value of next `n_time_steps` has flipped
     compared to value at given time. Flipping means if went above threshold or not.
+
+    If the value of array[i] is already above threshold and all next n_time_steps also above
+    threshold, the encoded value of output[i] is 0, otherwise, if it goes below threshold in the
+    next n_time_steps it output[i] is 1.
+    Similarly, if the value of array[i] is below threshold, and it goes above within the next
+    n_time_steps, the value of output[i] is 1.
     """
     res = []
     binary_array = threshold_binarizer(array, threshold)
