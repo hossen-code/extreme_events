@@ -65,18 +65,26 @@ def threshold_binarizer(array: np.ndarray, threshold: float):
     Turns an array of floats into a binary array (0. and 1.) where
     the value smaller than threshold returns 0, otherwise 1.
     """
-    return (array > threshold) * np.ones(np.shape(array))
+    return (array > threshold) * np.ones(np.shape(array), dtype=int)
 
 
-def if_flips(array: np.array):
+def if_flips_in_next_n_steps(array: np.array, threshold: float, n_time_steps):
     """
-    Returns if any value after the first element is different from the first element.
+    Returns an encoding that shows if the value of next `n_time_steps` has flipped
+    compared to value at given time. Flipping means if went above threshold or not.
     """
-    # I think there is a better way to write this part.
-    if array[0] == 0:
-        if 1.0 in array[1:]:
-            return True
-    if array[0] == 1:
-        if 0.0 in array[1:]:
-            return True
-    return False
+    res = []
+    binary_array = threshold_binarizer(array, threshold)
+    for i in range(len(array) - n_time_steps):
+        if binary_array[i]:
+            if np.all(binary_array[i+1:i+n_time_steps+1]):
+                res.append(0)
+            else:
+                res.append(1)
+        if not binary_array[i]:
+            if np.any(binary_array[i+1:i+n_time_steps+1]):
+                res.append(1)
+            else:
+                res.append(0)
+
+    return np.array(res)
