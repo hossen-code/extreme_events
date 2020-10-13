@@ -2,19 +2,17 @@ import tensorflow as tf
 from tensorflow import keras
 
 
-class SimpleRNN(object):
+class SimpleTwoLayerRNN(object):
     """Implements simple RNN model for extreme event prediction"""
     def __init__(self,
                  loss_function,
                  optimizer,
                  metrics,
-                 num_rnn_layers=2,
+                 input_shape,
                  num_rnn_nodes_per_layer=20,
-                 num_variates=2,
                  ):
-        self.num_rnn_layers = num_rnn_layers
         self.num_rnn_nodes_per_layer = num_rnn_nodes_per_layer
-        self.num_variates = num_variates
+        self.input_shape = input_shape
         self.loss_function = loss_function
         self.optimizer = optimizer
         self.metrics = metrics
@@ -36,11 +34,10 @@ class SimpleRNN(object):
         layers = []
         input_layer = keras.layers.SimpleRNN(self.num_rnn_nodes_per_layer,
                                              return_sequences=True,
-                                             input_shape=[None, self.num_variates])
+                                             input_shape=self.input_shape)
         layers.append(input_layer)
         # adding hidden layers
-        for _ in range(self.num_rnn_layers - 1):
-            layers.append(keras.layers.SimpleRNN(self.num_rnn_nodes_per_layer,
+        layers.append(keras.layers.SimpleRNN(self.num_rnn_nodes_per_layer,
                                              return_sequences=True))
         # adding output layer
         layers.append(keras.layers.SimpleRNN(1))  # this may change depending on output shape

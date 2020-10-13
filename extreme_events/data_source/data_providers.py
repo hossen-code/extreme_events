@@ -40,7 +40,8 @@ def rossler_dataset_maker(x_0: List[float],
     z = z[shift_length:]
     if target_threshold_val is not None:
         if not isinstance(target_threshold_val, float):
-            raise TypeError(f"target_threshold_binarizer must be a float, given {type(target_threshold_val)}")
+            raise TypeError(f"target_threshold_binarizer must be a float, given "
+                            f"{type(target_threshold_val)}")
         z = threshold_binarizer(z, target_threshold_val)
     stacked_and_converted = np.float32(np.stack([x, y, z], axis=1))
     final_shaped_array = np.expand_dims(stacked_and_converted, axis=0)

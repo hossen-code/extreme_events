@@ -2,7 +2,7 @@ import tensorflow as tf
 from tensorflow import keras
 
 
-class GRU(object):
+class GRUAndConv1D(object):
     """Implements GRU and Conv1D as the first layer model for extreme event prediction"""
     def __init__(self,
                  loss_function,
@@ -25,7 +25,7 @@ class GRU(object):
         # memory growth has to be set to True for lstm to run
         gpus = tf.config.experimental.list_physical_devices(device_type='GPU')
         tf.config.experimental.set_memory_growth(device=gpus[0], enable=True)
-        
+
         if not self.model:
             self._make_model()
         if on_gpu:
@@ -38,17 +38,20 @@ class GRU(object):
 
     def _make_model(self):
         layers = []
-        input_layer = keras.layers.GRU(self.num_gru_nodes_per_layer,
-                                       return_sequences=True,
-                                       input_shape=self.input_shape)
-        layers.append(input_layer)
-        for _ in range(self.num_gru_layers):
-            layers.append(keras.layers.GRU(self.num_gru_nodes_per_layer,
-                                           return_sequences=True))
-
+        conv_1d_layer = keras.layers.Conv1D(filters=20, # these numbers just from the hands on ml book
+                                            kernel_size=2,
+                                            strides=4,
+                                            padding="valid",
+                                            input_shape=self.input_shape)
+        layers.append(conv_1d_layer)
+        # TODO, conv1d works with return sequence false, and last layer not a time distributed
+        layers.append(keras.layers.GRU(self.num_gru_nodes_per_layer))
         layers.append(keras.layers.TimeDistributed(keras.layers.Dense(1)))
         model = keras.models.Sequential(layers)
         model.compile(loss=self.loss_function,
                       optimizer=self.optimizer,
                       metrics=self.metrics)
+
+        model.compile(loss="mse", optimizer="adam", metrics=["mse"])
+
         self.model = model
