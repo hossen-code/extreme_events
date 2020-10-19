@@ -46,7 +46,7 @@ class GRUAndConv1D(object):
         layers.append(conv_1d_layer)
         # TODO, conv1d works with return sequence false, and last layer not a time distributed
         layers.append(keras.layers.GRU(self.num_gru_nodes_per_layer))
-        layers.append(keras.layers.TimeDistributed(keras.layers.Dense(1)))
+        layers.append(keras.layers.Dense(1))
         model = keras.models.Sequential(layers)
         model.compile(loss=self.loss_function,
                       optimizer=self.optimizer,

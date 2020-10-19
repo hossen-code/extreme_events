@@ -69,10 +69,12 @@ def threshold_binarizer(array: np.ndarray, threshold: float):
     return (array > threshold) * np.ones(np.shape(array), dtype=int)
 
 
-def if_flips_in_next_n_steps(array: np.array, threshold: float, n_time_steps: int):
+def if_flips_in_next_n_steps(inp_array: np.array, threshold: float, n_time_steps: int,
+                             padding=True):
     """
     Returns an encoding that shows if the value of next `n_time_steps` has flipped
-    compared to value at given time. Flipping means if went above threshold or not.
+    compared to value at given time. Flipping means if went above threshold or went below thershold.
+    If the state has changed.
 
     If the value of array[i] is already above threshold and all next n_time_steps also above
     threshold, the encoded value of output[i] is 0, otherwise, if it goes below threshold in the
@@ -81,8 +83,12 @@ def if_flips_in_next_n_steps(array: np.array, threshold: float, n_time_steps: in
     n_time_steps, the value of output[i] is 1.
     """
     res = []
-    binary_array = threshold_binarizer(array, threshold)
-    for i in range(len(array) - n_time_steps):
+    inp_arr_shape = inp_array.shape
+    if len(inp_arr_shape) > 2 or inp_arr_shape[0] != 1:
+        raise TypeError("the shape of input array must be (1, n)")
+    flat_inp_array = inp_array.flatten()
+    binary_array = threshold_binarizer(flat_inp_array, threshold)
+    for i in range(inp_arr_shape[1] - n_time_steps):
         if binary_array[i]:
             if np.all(binary_array[i+1:i+n_time_steps+1]):
                 res.append(0)
@@ -93,5 +99,11 @@ def if_flips_in_next_n_steps(array: np.array, threshold: float, n_time_steps: in
                 res.append(1)
             else:
                 res.append(0)
+    if padding:
+        res += [res[-1]]*n_time_steps
+        res = np.array(res).reshape(inp_arr_shape)
+    else:
+        # note that the output shape will not be the same as input
+        res = np.array(res).reshape(1, len(res))
 
-    return np.array(res)
+    return res

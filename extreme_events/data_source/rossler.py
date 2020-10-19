@@ -24,7 +24,7 @@ def rossler(x_0, t):
     return [dx, dy, dz]
 
 
-# # figure
+# figure
 # fig = plt.figure(figsize=(13, 9))
 # ax = fig.gca(projection='3d')
 # ax.set_ylim(-6, 6)
