@@ -69,7 +69,7 @@ def threshold_binarizer(array: np.ndarray, threshold: float):
     return (array > threshold) * np.ones(np.shape(array), dtype=int)
 
 
-def if_flips_in_next_n_steps(inp_array: np.array, threshold: float, n_time_steps: int,
+def if_flips_in_next_n_steps(inp_array: np.array, *, threshold: float, n_time_steps: int,
                              padding=True):
     """
     Returns an encoding that shows if the value of next `n_time_steps` has flipped
@@ -100,7 +100,7 @@ def if_flips_in_next_n_steps(inp_array: np.array, threshold: float, n_time_steps
             else:
                 res.append(0)
     if padding:
-        res += [res[-1]]*n_time_steps
+        res += [res[-1]] * n_time_steps
         res = np.array(res).reshape(inp_arr_shape)
     else:
         # note that the output shape will not be the same as input

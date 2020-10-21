@@ -1,7 +1,7 @@
 from tensorflow import keras
 import numpy as np
 
-from extreme_events.data_source.data_providers import rossler_dataset_maker
+from extreme_events.data_source.data_providers import rossler_dataset_maker, if_flips_in_next_n_steps
 from extreme_events.utils.model_utils import set_seeds_and_clear_session
 from extreme_events.models.simple_rnn import SimpleTwoLayerRNN
 
@@ -18,6 +18,7 @@ if __name__ == "__main__":
                                  time_step=time_step)
     x_train = data[0][:, :-1].reshape(1, data.shape[1], 2)  # both x and y
     y_train = data[0][:, -1:].reshape(1, data.shape[1])  # assuming the last column is target
+    y_train = if_flips_in_next_n_steps(y_train, threshold=5.0, n_time_steps=20)
     optimizer = keras.optimizers.Adam(lr=0.005)
     loss = keras.losses.Huber()
     metrics = ["mse"]
