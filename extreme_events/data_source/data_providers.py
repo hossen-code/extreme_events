@@ -51,7 +51,7 @@ def rossler_dataset_maker(x_0: List[float],
 def train_test_splitter(data_column: np.ndarray,
                         train_ratio: float):
     """
-    TODO: test for ndimensional, should be good for 1d
+    TODO: test for n-dimensional, should be good for 1d
     for now we're assuming the last member is the target.
     """
     train_size = floor(len(data_column)*train_ratio)
@@ -73,7 +73,7 @@ def if_flips_in_next_n_steps(inp_array: np.array, *, threshold: float, n_time_st
                              padding=True):
     """
     Returns an encoding that shows if the value of next `n_time_steps` has flipped
-    compared to value at given time. Flipping means if went above threshold or went below thershold.
+    compared to value at given time. Flipping means if went above threshold or went below threshold.
     If the state has changed.
 
     If the value of array[i] is already above threshold and all next n_time_steps also above
@@ -85,7 +85,7 @@ def if_flips_in_next_n_steps(inp_array: np.array, *, threshold: float, n_time_st
     res = []
     inp_arr_shape = inp_array.shape
     if len(inp_arr_shape) > 2 or inp_arr_shape[0] != 1:
-        raise TypeError("the shape of input array must be (1, n)")
+        raise TypeError(f"the shape of input array must be (1, n), received {inp_arr_shape}")
     flat_inp_array = inp_array.flatten()
     binary_array = threshold_binarizer(flat_inp_array, threshold)
     for i in range(inp_arr_shape[1] - n_time_steps):

@@ -19,7 +19,10 @@ class SimpleTwoLayerRNN(object):
         self.model = None
         self.hisory = None
 
-    def fit(self, X, y, num_epochs=20, on_gpu=True):
+    def fit(self, X, y, num_epochs=10, on_gpu=True):
+        # memory growth has to be set to True for lstm to run
+        gpus = tf.config.experimental.list_physical_devices(device_type='GPU')
+        tf.config.experimental.set_memory_growth(device=gpus[0], enable=True)
         if not self.model:
             self._make_model()
         if on_gpu:
@@ -39,8 +42,10 @@ class SimpleTwoLayerRNN(object):
         # adding hidden layers
         layers.append(keras.layers.SimpleRNN(self.num_rnn_nodes_per_layer,
                                              return_sequences=True))
+        layers.append(keras.layers.SimpleRNN(self.num_rnn_nodes_per_layer,
+                                             return_sequences=True))
         # adding output layer
-        layers.append(keras.layers.SimpleRNN(1))  # this may change depending on output shape
+        layers.append(keras.layers.Dense(1))
         model = keras.models.Sequential(layers)
         model.compile(loss=self.loss_function,
                       optimizer=self.optimizer,

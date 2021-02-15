@@ -1,6 +1,10 @@
+from collections import namedtuple
+
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
+
+MetaData = namedtuple("MetaData", ["init_val", "start_time", "end_time", "time_step", "loss_type"])
 
 
 def set_seeds_and_clear_session():
